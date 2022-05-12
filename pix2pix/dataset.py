@@ -44,6 +44,6 @@ if __name__ == "__main__":
     loader = DataLoader(dataset, batch_size=5)
     for x, y in loader:
         print(x.shape)
-        save_image(x, "imgs/x.png")
-        save_image(y, "imgs/y.png")
+        save_image(x, "imgs1/x.png")
+        save_image(y, "imgs1/y.png")
         break

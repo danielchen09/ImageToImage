@@ -8,8 +8,8 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 
-def train(disc, gen, train_loader, opt_d, opt_g, l1_loss, bce_loss, d_scalar, g_scalar):
-    for step, (x, y) in enumerate(tqdm(train_loader)):
+def train(epoch, disc, gen, train_loader, opt_d, opt_g, l1_loss, bce_loss, d_scalar, g_scalar):
+    for step, (x, y) in enumerate(tqdm(train_loader, desc=f'epoch {epoch}/{config.NUM_EPOCHS}')):
         x = x.to(config.DEVICE)
         y = y.to(config.DEVICE)
 
@@ -56,16 +56,15 @@ def main():
     g_scalar = torch.cuda.amp.GradScaler()
     d_scalar = torch.cuda.amp.GradScaler()
 
-    val_dataset = MapDataset(root_dir=config.VAL_DIR)
+    val_dataset = MapDataset(root_dir=config.VAL_DIR, test=True)
     val_loader = DataLoader(val_dataset, batch_size=1, shuffle=False)
 
     for epoch in range(config.NUM_EPOCHS):
-        train(disc, gen, train_loader, opt_d, opt_g, l1_loss, bce_loss, d_scalar, g_scalar)
+        train(epoch, disc, gen, train_loader, opt_d, opt_g, l1_loss, bce_loss, d_scalar, g_scalar)
         if epoch % 10 == 0:
             save_checkpoint(config.GEN_CKPT, gen, opt_g)
             save_checkpoint(config.DISC_CKPT, disc, opt_d)
-
-        save_some_examples(gen, val_loader, epoch, folder='imgs')
+            save_some_examples(gen, val_loader, epoch, folder='imgs1')
 
 
 if __name__ == '__main__':

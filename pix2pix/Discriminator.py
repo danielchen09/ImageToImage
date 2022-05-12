@@ -22,7 +22,7 @@ class Discriminator(nn.Module):
         layers.append(CBlock(in_channels * 2, hidden_channels[0], batch_norm=False))
         for i in range(1, len(hidden_channels)):
             layers.append(CBlock(hidden_channels[i - 1], hidden_channels[i],
-                                 stride=1 if i == len(hidden_channels) - 1 else 2))
+                                 stride=1 if i == len(hidden_channels) - 1 else 2,))
         layers.append(nn.Conv2d(hidden_channels[-1], 1, 4, 1, 1, padding_mode='reflect'))
         self.model = nn.Sequential(*layers)
 

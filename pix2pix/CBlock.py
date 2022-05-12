@@ -11,19 +11,19 @@ class CBlock(nn.Module):
     by a factor of 2, whereas in the decoder they upsample by a
     factor of 2
     """
-    def __init__(self, in_channels, out_channels, stride=2, batch_norm=True, dropout=False, upsample=False, act='lrelu'):
+    def __init__(self, in_channels, out_channels, stride=2, padding=1, batch_norm=True, dropout=False, upsample=False, act='lrelu'):
         super(CBlock, self).__init__()
         self.use_dropout = dropout
         self.dropout = nn.Dropout(0.5)
 
         layers = []
         if upsample:
-            layers.append(nn.ConvTranspose2d(in_channels, out_channels, 4, stride, 1, bias=False))
+            layers.append(nn.ConvTranspose2d(in_channels, out_channels, 4, stride, padding, bias=False))
         else:
-            layers.append(nn.Conv2d(in_channels, out_channels, 4, stride, 1, bias=False, padding_mode='reflect'))
+            layers.append(nn.Conv2d(in_channels, out_channels, 4, stride, padding, bias=False, padding_mode='reflect'))
 
         if batch_norm:
-            layers.append(nn.InstanceNorm2d(out_channels))
+            layers.append(nn.InstanceNorm2d(out_channels, affine=False))
 
         if act == 'lrelu':
             layers.append(nn.LeakyReLU(0.2))
